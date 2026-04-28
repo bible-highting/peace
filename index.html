@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>꽝! 말폭탄</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game" aria-label="말폭탄 애니메이션">
+      <section class="stage-wrap">
+        <div class="stage" id="stage">
+          <div class="fallback-art" id="fallbackArt" aria-hidden="true">
+            <div class="fallback-face" id="characterFace">
+              <span class="character-extra cap"></span>
+              <span class="character-extra cap-brim"></span>
+              <span class="character-extra ear ear-left"></span>
+              <span class="character-extra ear ear-right"></span>
+              <span class="character-extra whisker whisker-left top"></span>
+              <span class="character-extra whisker whisker-left bottom"></span>
+              <span class="character-extra whisker whisker-right top"></span>
+              <span class="character-extra whisker whisker-right bottom"></span>
+              <span class="eye eye-left"></span>
+              <span class="eye eye-right"></span>
+              <span class="mouth"></span>
+            </div>
+          </div>
+          <div class="mouth-anchor" id="mouthAnchor" aria-hidden="true"></div>
+          <div class="blast-layer" id="blastLayer" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="control-panel" aria-label="입력 패널">
+        <div class="character-control" aria-label="캐릭터 선택">
+          <button class="character-option is-active" type="button" data-character="default">기본</button>
+          <button class="character-option" type="button" data-character="baseball">야구</button>
+          <button class="character-option" type="button" data-character="rabbit">토끼</button>
+          <button class="character-option" type="button" data-character="cat">고양이</button>
+        </div>
+
+        <label class="background-control">
+          <span>배경 이미지</span>
+          <input id="backgroundInput" type="file" accept="image/*" />
+        </label>
+
+        <form class="sentence-form" id="sentenceForm" autocomplete="off">
+          <div class="input-row">
+            <input
+              id="sentenceInput"
+              type="text"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="예: 나 오늘 진짜 최고야"
+              maxlength="80"
+            />
+            <button type="submit">발사</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
