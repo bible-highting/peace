@@ -7,7 +7,12 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="game" aria-label="말폭탄 애니메이션">
+    <main class="game" aria-label="말폭탄 애니메이션" data-mode="classic">
+      <div class="version-control" aria-label="버전 선택">
+        <button class="version-option is-active" type="button" data-version="classic">bamti</button>
+        <button class="version-option" type="button" data-version="custom">custom</button>
+      </div>
+
       <section class="stage-wrap">
         <div class="stage" id="stage">
           <div class="fallback-art" id="fallbackArt" aria-hidden="true">
@@ -26,11 +31,16 @@
             </div>
           </div>
           <div class="mouth-anchor" id="mouthAnchor" aria-hidden="true"></div>
+          <div class="pin-marker" id="pinMarker" aria-hidden="true"></div>
           <div class="blast-layer" id="blastLayer" aria-hidden="true"></div>
         </div>
       </section>
 
       <section class="control-panel" aria-label="입력 패널">
+        <p class="mode-note" id="modeNote">
+          1버전: 현재 구성 유지. 캐릭터만 바꾸고 바로 발사할 수 있어요.
+        </p>
+
         <div class="character-control" aria-label="캐릭터 선택">
           <button class="character-option is-active" type="button" data-character="default">기본</button>
           <button class="character-option" type="button" data-character="baseball">야구</button>
@@ -42,6 +52,10 @@
           <span>배경 이미지</span>
           <input id="backgroundInput" type="file" accept="image/*" />
         </label>
+
+        <p class="pin-help" id="pinHelp">
+          배경을 넣은 뒤, 스테이지에서 소리가 시작될 위치를 탭해서 핀을 옮기세요.
+        </p>
 
         <form class="sentence-form" id="sentenceForm" autocomplete="off">
           <div class="input-row">

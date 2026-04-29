@@ -4,13 +4,35 @@ const backgroundInput = document.querySelector("#backgroundInput");
 const fallbackArt = document.querySelector("#fallbackArt");
 const characterFace = document.querySelector("#characterFace");
 const characterOptions = document.querySelectorAll(".character-option");
+const versionOptions = document.querySelectorAll(".version-option");
+const game = document.querySelector(".game");
 const stage = document.querySelector("#stage");
 const blastLayer = document.querySelector("#blastLayer");
 const mouthAnchor = document.querySelector("#mouthAnchor");
+const pinMarker = document.querySelector("#pinMarker");
+const modeNote = document.querySelector("#modeNote");
+const pinHelp = document.querySelector("#pinHelp");
 
 const sampleWords = ["꽝!", "꽝!", "꽝!"];
+const modeDescriptions = {
+  classic: "1버전: 현재 구성 유지. 캐릭터만 바꾸고 바로 발사할 수 있어요.",
+  custom: "2버전: 배경을 넣고 발사 시작 핀을 직접 찍어서 어떤 이미지든 활용할 수 있어요.",
+};
+const pinDescriptions = {
+  unset: "배경을 넣은 뒤, 스테이지에서 소리가 시작될 위치를 탭해서 핀을 옮기세요.",
+  default: "기본 핀이 놓여 있어요. 이미지에서 입 위치를 탭하면 바로 그 지점으로 옮길 수 있어요.",
+  set: "핀 위치가 설정됐어요. 다른 곳을 탭하면 바로 발사 시작점이 바뀝니다.",
+};
+const state = {
+  mode: "classic",
+  customAnchor: null,
+  customAnchorPinned: false,
+  customBackgroundUrl: "",
+};
 
 clearVolatileInputs();
+setCharacter("default");
+setMode("classic");
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -26,22 +48,50 @@ backgroundInput.addEventListener("change", (event) => {
     return;
   }
 
-  fallbackArt.style.setProperty("--custom-bg", `url("${URL.createObjectURL(file)}")`);
-  fallbackArt.classList.add("has-custom-bg");
+  if (state.customBackgroundUrl) {
+    URL.revokeObjectURL(state.customBackgroundUrl);
+  }
+
+  state.customBackgroundUrl = URL.createObjectURL(file);
+  syncCustomBackground();
 });
 
 characterOptions.forEach((option) => {
   option.addEventListener("click", () => {
-    const character = option.dataset.character;
-
-    characterFace.className = `fallback-face character-${character}`;
-    characterOptions.forEach((item) => item.classList.toggle("is-active", item === option));
+    setCharacter(option.dataset.character);
   });
+});
+
+versionOptions.forEach((option) => {
+  option.addEventListener("click", () => {
+    setMode(option.dataset.version);
+  });
+});
+
+stage.addEventListener("click", (event) => {
+  if (state.mode !== "custom") {
+    return;
+  }
+
+  const rect = stage.getBoundingClientRect();
+  const x = Math.min(Math.max(event.clientX - rect.left, 0), rect.width);
+  const y = Math.min(Math.max(event.clientY - rect.top, 0), rect.height);
+
+  state.customAnchor = {
+    x: x / rect.width,
+    y: y / rect.height,
+  };
+  state.customAnchorPinned = true;
+
+  renderPin();
+  pinHelp.textContent = pinDescriptions.set;
 });
 
 window.addEventListener("pageshow", clearVolatileInputs);
 window.addEventListener("pagehide", clearVolatileInputs);
 window.addEventListener("beforeunload", clearVolatileInputs);
+window.addEventListener("resize", renderPin);
+window.addEventListener("beforeunload", releaseCustomBackground);
 
 try {
   localStorage.removeItem("sentenceInput");
@@ -56,11 +106,77 @@ function clearVolatileInputs() {
   form.reset();
 }
 
+function setCharacter(character) {
+  characterFace.className = `fallback-face character-${character}`;
+  characterOptions.forEach((item) => item.classList.toggle("is-active", item.dataset.character === character));
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  game.dataset.mode = mode;
+  modeNote.textContent = modeDescriptions[mode];
+  versionOptions.forEach((item) => item.classList.toggle("is-active", item.dataset.version === mode));
+  stage.classList.toggle("is-pinnable", mode === "custom");
+
+  if (mode === "custom" && !state.customAnchor) {
+    state.customAnchor = { x: 0.6, y: 0.55 };
+    state.customAnchorPinned = false;
+  }
+
+  pinHelp.textContent = getPinHelpText();
+  syncCustomBackground();
+  renderPin();
+}
+
+function getPinHelpText() {
+  if (!state.customAnchor) {
+    return pinDescriptions.unset;
+  }
+
+  return state.customAnchorPinned ? pinDescriptions.set : pinDescriptions.default;
+}
+
+function syncCustomBackground() {
+  const shouldShowCustomBackground = state.mode === "custom" && Boolean(state.customBackgroundUrl);
+
+  if (shouldShowCustomBackground) {
+    fallbackArt.style.setProperty("--custom-bg", `url("${state.customBackgroundUrl}")`);
+    fallbackArt.classList.add("has-custom-bg");
+    return;
+  }
+
+  fallbackArt.classList.remove("has-custom-bg");
+  fallbackArt.style.removeProperty("--custom-bg");
+}
+
+function renderPin() {
+  const hasVisiblePin = state.mode === "custom" && state.customAnchor && !stage.classList.contains("firing");
+
+  pinMarker.classList.toggle("is-visible", Boolean(hasVisiblePin));
+
+  if (!hasVisiblePin) {
+    return;
+  }
+
+  pinMarker.style.setProperty("--pin-x", `${state.customAnchor.x * 100}%`);
+  pinMarker.style.setProperty("--pin-y", `${state.customAnchor.y * 100}%`);
+}
+
+function releaseCustomBackground() {
+  if (!state.customBackgroundUrl) {
+    return;
+  }
+
+  URL.revokeObjectURL(state.customBackgroundUrl);
+  state.customBackgroundUrl = "";
+}
+
 function fireWords(words) {
   blastLayer.replaceChildren();
   stage.classList.remove("shake", "firing");
   void stage.offsetWidth;
   stage.classList.add("shake", "firing");
+  renderPin();
 
   const anchor = getAnchorPoint();
   const firingDuration = Math.max(900, (words.length - 1) * 190 + 980);
@@ -76,10 +192,18 @@ function fireWords(words) {
 
   window.setTimeout(() => {
     stage.classList.remove("firing");
+    renderPin();
   }, firingDuration);
 }
 
 function getAnchorPoint() {
+  if (state.mode === "custom" && state.customAnchor) {
+    return {
+      x: stage.clientWidth * state.customAnchor.x,
+      y: stage.clientHeight * state.customAnchor.y,
+    };
+  }
+
   const stageBox = stage.getBoundingClientRect();
   const anchorBox = mouthAnchor.getBoundingClientRect();
 
