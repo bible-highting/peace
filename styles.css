@@ -527,23 +527,12 @@ body {
   backdrop-filter: blur(18px);
 }
 
-.mode-note,
-.pin-help,
-.privacy-note {
+.pin-help {
   margin: 0;
   color: #344054;
   font-size: 14px;
   line-height: 1.45;
   font-weight: 700;
-}
-
-.privacy-note {
-  padding: 12px 14px;
-  border: 1px solid rgba(8, 120, 173, 0.18);
-  border-radius: 8px;
-  color: #18445e;
-  background: rgba(232, 248, 255, 0.72);
-  font-size: 13px;
 }
 
 .character-control {
@@ -791,7 +780,12 @@ button:active {
   }
 
   .character-control {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .character-option {
+    min-height: 46px;
+    font-size: 14px;
   }
 
   .version-control {

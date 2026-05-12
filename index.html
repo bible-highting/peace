@@ -49,26 +49,6 @@
       </section>
 
       <section class="control-panel" aria-label="입력 패널">
-        <p class="mode-note" id="modeNote">
-          1버전: 현재 구성 유지. 캐릭터만 바꾸고 바로 발사할 수 있어요.
-        </p>
-
-        <div class="character-control" aria-label="캐릭터 선택">
-          <button class="character-option is-active" type="button" data-character="default">기본</button>
-          <button class="character-option" type="button" data-character="baseball">야구</button>
-          <button class="character-option" type="button" data-character="rabbit">토끼</button>
-          <button class="character-option" type="button" data-character="cat">고양이</button>
-        </div>
-
-        <label class="background-control">
-          <span>내 기기에서 배경 선택</span>
-          <input id="backgroundInput" type="file" accept="image/*" />
-        </label>
-
-        <p class="pin-help" id="pinHelp">
-          배경을 넣은 뒤, 스테이지에서 소리가 시작될 위치를 탭해서 핀을 옮기세요.
-        </p>
-
         <form class="sentence-form" id="sentenceForm" autocomplete="off">
           <div class="input-row">
             <input
@@ -84,8 +64,20 @@
           </div>
         </form>
 
-        <p class="privacy-note">
-          이 페이지는 비밀번호, 전화번호, 카드번호를 요구하지 않습니다. 입력한 문장과 선택한 이미지는 브라우저 안에서만 사용되며 서버로 전송되지 않습니다.
+        <div class="character-control" aria-label="캐릭터 선택">
+          <button class="character-option is-active" type="button" data-character="default">기본</button>
+          <button class="character-option" type="button" data-character="baseball">야구</button>
+          <button class="character-option" type="button" data-character="rabbit">토끼</button>
+          <button class="character-option" type="button" data-character="cat">고양이</button>
+        </div>
+
+        <label class="background-control">
+          <span>내 기기에서 배경 선택</span>
+          <input id="backgroundInput" type="file" accept="image/*" />
+        </label>
+
+        <p class="pin-help" id="pinHelp">
+          배경을 넣은 뒤, 스테이지에서 소리가 시작될 위치를 탭해서 핀을 옮기세요.
         </p>
       </section>
     </main>

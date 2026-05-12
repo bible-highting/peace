@@ -10,14 +10,9 @@ const stage = document.querySelector("#stage");
 const blastLayer = document.querySelector("#blastLayer");
 const mouthAnchor = document.querySelector("#mouthAnchor");
 const pinMarker = document.querySelector("#pinMarker");
-const modeNote = document.querySelector("#modeNote");
 const pinHelp = document.querySelector("#pinHelp");
 
 const sampleWords = ["꽝!", "꽝!", "꽝!"];
-const modeDescriptions = {
-  classic: "1버전: 현재 구성 유지. 캐릭터만 바꾸고 바로 발사할 수 있어요.",
-  custom: "2버전: 배경을 넣고 발사 시작 핀을 직접 찍어서 어떤 이미지든 활용할 수 있어요.",
-};
 const pinDescriptions = {
   unset: "배경을 넣은 뒤, 스테이지에서 소리가 시작될 위치를 탭해서 핀을 옮기세요.",
   default: "기본 핀이 놓여 있어요. 이미지에서 입 위치를 탭하면 바로 그 지점으로 옮길 수 있어요.",
@@ -114,7 +109,6 @@ function setCharacter(character) {
 function setMode(mode) {
   state.mode = mode;
   game.dataset.mode = mode;
-  modeNote.textContent = modeDescriptions[mode];
   versionOptions.forEach((item) => item.classList.toggle("is-active", item.dataset.version === mode));
   stage.classList.toggle("is-pinnable", mode === "custom");
 
