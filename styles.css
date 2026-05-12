@@ -8,7 +8,10 @@
   --panel: rgba(255, 255, 255, 0.88);
   --panel-border: rgba(255, 255, 255, 0.62);
   --muted: #667085;
-  --default-bg: url("https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/201706/21/e07cf9e1-b5c9-47ec-951d-5de7ade24a8f.jpg");
+  --default-bg:
+    radial-gradient(circle at 24% 20%, rgba(255, 255, 255, 0.32) 0 9%, transparent 10%),
+    radial-gradient(circle at 73% 28%, rgba(255, 255, 255, 0.22) 0 7%, transparent 8%),
+    linear-gradient(135deg, #10a7d1 0%, #0878ad 48%, #064f84 100%);
 }
 
 * {
