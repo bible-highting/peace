@@ -1,6 +1,7 @@
 const form = document.querySelector("#sentenceForm");
 const input = document.querySelector("#sentenceInput");
 const backgroundInput = document.querySelector("#backgroundInput");
+const backgroundUrlInput = document.querySelector("#backgroundUrlInput");
 const fallbackArt = document.querySelector("#fallbackArt");
 const characterFace = document.querySelector("#characterFace");
 const characterOptions = document.querySelectorAll(".character-option");
@@ -23,6 +24,7 @@ const state = {
   customAnchor: null,
   customAnchorPinned: false,
   customBackgroundUrl: "",
+  customBackgroundSource: "",
 };
 
 clearVolatileInputs();
@@ -44,11 +46,24 @@ backgroundInput.addEventListener("change", (event) => {
   }
 
   if (state.customBackgroundUrl) {
-    URL.revokeObjectURL(state.customBackgroundUrl);
+    releaseCustomBackground();
   }
 
   state.customBackgroundUrl = URL.createObjectURL(file);
+  state.customBackgroundSource = "file";
+  backgroundUrlInput.value = "";
   syncCustomBackground();
+});
+
+backgroundUrlInput.addEventListener("change", syncBackgroundUrlInput);
+backgroundUrlInput.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter") {
+    return;
+  }
+
+  event.preventDefault();
+  syncBackgroundUrlInput();
+  backgroundUrlInput.blur();
 });
 
 characterOptions.forEach((option) => {
@@ -161,8 +176,43 @@ function releaseCustomBackground() {
     return;
   }
 
-  URL.revokeObjectURL(state.customBackgroundUrl);
+  if (state.customBackgroundSource === "file") {
+    URL.revokeObjectURL(state.customBackgroundUrl);
+  }
+
   state.customBackgroundUrl = "";
+  state.customBackgroundSource = "";
+}
+
+function syncBackgroundUrlInput() {
+  const nextUrl = backgroundUrlInput.value.trim();
+
+  if (!nextUrl) {
+    return;
+  }
+
+  let parsedUrl;
+
+  try {
+    parsedUrl = new URL(nextUrl);
+  } catch {
+    backgroundUrlInput.setCustomValidity("이미지 주소를 https://로 시작하는 전체 링크로 넣어주세요.");
+    backgroundUrlInput.reportValidity();
+    return;
+  }
+
+  if (parsedUrl.protocol !== "https:") {
+    backgroundUrlInput.setCustomValidity("https:// 이미지 링크만 사용할 수 있어요.");
+    backgroundUrlInput.reportValidity();
+    return;
+  }
+
+  backgroundUrlInput.setCustomValidity("");
+  releaseCustomBackground();
+  backgroundInput.value = "";
+  state.customBackgroundUrl = parsedUrl.href;
+  state.customBackgroundSource = "url";
+  syncCustomBackground();
 }
 
 function fireWords(words) {
