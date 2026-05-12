@@ -528,12 +528,22 @@ body {
 }
 
 .mode-note,
-.pin-help {
+.pin-help,
+.privacy-note {
   margin: 0;
   color: #344054;
   font-size: 14px;
   line-height: 1.45;
   font-weight: 700;
+}
+
+.privacy-note {
+  padding: 12px 14px;
+  border: 1px solid rgba(8, 120, 173, 0.18);
+  border-radius: 8px;
+  color: #18445e;
+  background: rgba(232, 248, 255, 0.72);
+  font-size: 13px;
 }
 
 .character-control {
